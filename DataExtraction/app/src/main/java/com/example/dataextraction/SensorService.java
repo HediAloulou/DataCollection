@@ -41,6 +41,7 @@ public class SensorService extends Service implements SensorEventListener {
     private List<float[]> rotationData = new ArrayList<>();
 
     private String username;
+    private String userType;
 
     @SuppressLint("ForegroundServiceType")
     @Override
@@ -71,7 +72,8 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         username = intent.getStringExtra("username");
-        Log.d(TAG, "Service started with username: " + username);
+        userType = intent.getStringExtra("userType");
+        Log.d(TAG, "Service started with username: " + username + " and userType: " + userType);
         return START_STICKY;
     }
 
@@ -127,6 +129,7 @@ public class SensorService extends Service implements SensorEventListener {
             String formattedTimestamp = dateFormat.format(date);
             sensorData.put("timestamp" , formattedTimestamp);
             sensorData.put("username", username);
+            sensorData.put("userType", userType);
             sensorData.put("sensor", sensorName);
             sensorData.put("x", values[0]);
             sensorData.put("y", values[1]);

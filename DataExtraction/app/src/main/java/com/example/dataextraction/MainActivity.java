@@ -2,8 +2,11 @@ package com.example.dataextraction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -14,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private Button startButton;
     private Button stopButton;
     private EditText usernameEditText;
+    private RadioGroup userTypeGroup;
     private boolean isRecording = false;
 
     @Override
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Username input
         usernameEditText = findViewById(R.id.usernameEditText);
+
+        // User type radio group
+        userTypeGroup = findViewById(R.id.userTypeGroup);
     }
 
     private void startSensorRecording() {
@@ -51,12 +58,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        int selectedUserTypeId = userTypeGroup.getCheckedRadioButtonId();
+        if (selectedUserTypeId == -1) {
+            Toast.makeText(this, "Please select a user type", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        RadioButton selectedUserTypeButton = findViewById(selectedUserTypeId);
+        String userType = selectedUserTypeButton.getText().toString();
+
         isRecording = true;
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
 
         Intent serviceIntent = new Intent(this, SensorService.class);
         serviceIntent.putExtra("username", username);
+        serviceIntent.putExtra("userType", userType);
         startService(serviceIntent);
     }
 
